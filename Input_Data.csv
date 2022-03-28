@@ -1,0 +1,4 @@
+Item_Code,Searched_Product_Name,Gender,Age_Group,Height,Weight,Bra_Size,Foot_Size,Predicted_Size,Rec_P1_Code,Rec_P1_Name,Rec_P2_Code,Rec_P2_Name,customer_id
+438961,W's wireless bra (3d hold),Female,20-29,166 - 170cm,56 - 60kg,65AA,24.5cm,65_70 AA,439217,W's ultra stretch skinny high rise jeans,445383,W's wireless bra (relax),1
+439217,W's ultra stretch skinny high rise jeans,Female,20-29,166 - 170cm,56 - 60kg,65AA,24.5cm,26,439241,W's ultra strecth high rise legging pants,439176,M's ultra stretch skinny fit jeans,1
+445086,M's cotton canvas lace up sneakers,Female,20-29,166 - 170cm,56 - 60kg,65AA,24.5cm,24.5,445000,M's u crew neck short sleeve t-shirt,433025,M's dry crew neck short sleeve t-shirt,1
