@@ -382,7 +382,7 @@ def size_recommender(item_code_input,Gender_input,Age_Group_input,Height_input,W
 df_img=pd.read_csv('Sample_img.csv')
 df_img.drop_duplicates(subset=['item_code'],inplace=True)
 df_img.reset_index(drop=True,inplace=True)
-item_list=pd.read_excel('item list.xlsx')
+item_list=pd.read_csv('item_list.csv')
 df_img['Item_Name']=df_img['item_code'].apply(lambda x:item_list[item_list['item code']==x]['item name'].unique()[0])
 df_img['Item_Sex']=df_img['Item_Name'].apply(lambda x:x[:1])
 
