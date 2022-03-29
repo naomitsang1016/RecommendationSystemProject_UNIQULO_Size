@@ -77,14 +77,9 @@ def Age_impute(x,y,z):
             if y in ['91 - 95cm','141 - 150cm', '151 - 155cm', '131 - 140cm','121 - 130cm','156 - 160cm']:
                 return '10 - 14歳'
             else:
-                return '15 - 19歳'
-    
-    
-    
-            
+                return '15 - 19歳'       
     elif x=='3 - 6歳':
         return '4 - 6歳'
-    
     else:
         return x
 
@@ -234,8 +229,6 @@ item_code_input=st.sidebar.text_input('Item Code')
 if item_code_input!='':
     item_code_input=int(item_code_input)
 
-
-
 #Bra and Shoes functions
            
 def bra_size_rec(item_code_input,x):
@@ -381,67 +374,43 @@ def size_recommender(item_code_input,Gender_input,Age_Group_input,Height_input,W
 
 df_img=pd.read_csv('Sample_img.csv')
 df_img.drop_duplicates(subset=['item_code'],inplace=True)
+df_img.drop(columns=['Unnamed: 0'],inplace=True)
 df_img.reset_index(drop=True,inplace=True)
 item_list=pd.read_csv('item_list.csv')
 df_img['Item_Name']=df_img['item_code'].apply(lambda x:item_list[item_list['item code']==x]['item name'].unique()[0])
 df_img['Item_Sex']=df_img['Item_Name'].apply(lambda x:x[:1])
 
-df_kids = df_img[df_img['Item_Sex'].isin(['K','G'])]
-df_kids.reset_index(inplace=True)
-df_kids.drop(columns=['index','Unnamed: 0'],inplace=True)
-
-df_women = df_img[df_img['Item_Sex']=='W']
-df_women.reset_index(inplace=True)
-df_women.drop(columns=['index','Unnamed: 0'],inplace=True)
-
-df_men = df_img[df_img['Item_Sex']=='M']
-df_men.reset_index(inplace=True)
-df_men.drop(columns=['index','Unnamed: 0'],inplace=True)
+def df_create(x):
+    if x == 'WOMEN':
+        df = df_img[df_img['Item_Sex']=='W']
+    if x == 'MEN':
+        df = df_img[df_img['Item_Sex']=='M']
+    else:
+        df = df_img[df_img['Item_Sex'].isin(['K','G'])]
+    df.reset_index(drop=True,inplace=True)
+    return df
 
 def create_tab(df_tab):
-    for n in range(0,len(df_tab),4):
-        a,b,c,d = st.columns(4)
-        with a:
-            st.image(df_tab.iloc[n,1])
-            st.caption(df_tab.iloc[n,5])
-            st.caption(f'Item code: {df_tab.iloc[n,0]}')
-        with b:
-            try:
-                st.image(df_tab.iloc[n+1,1])
-                st.caption(df_tab.iloc[n+1,5])
-                st.caption(f'Item code: {df_tab.iloc[n+1,0]}')
-            except:
-                pass
-        with c:
-            try:
-                st.image(df_tab.iloc[n+2,1])
-                st.caption(df_tab.iloc[n+2,5])
-                st.caption(f'Item code: {df_tab.iloc[n+2,0]}')
-            except:
-                pass
-        with d:
-            try:
-                st.image(df_tab.iloc[n+3,1])
-                st.caption(df_tab.iloc[n+3,5])
-                st.caption(f'Item code: {df_tab.iloc[n+3,0]}')
-            except:
-                pass
+    for i in range(0,len(df_tab),4):
+        cols = st.columns(4)
+        count=0
+        for j in range(i,i+4):
+            with cols[count]:
+                try:
+                    st.image(df_tab.iloc[j,1])
+                    st.caption(df_tab.iloc[j,5])
+                    st.caption(f'Item code: {df_tab.iloc[j,0]}')  
+                except:
+                        st.text(' ')
+            count+=1
         st.write('\n')
         st.write('\n')
         st.write('\n')
-
 
 if item_code_input == '':
     tab = st.selectbox('Please select interested category: ',('WOMEN','MEN','KIDS'))
-    if tab == 'WOMEN':
-        create_tab(df_women)    
-    elif tab == 'MEN':
-        create_tab(df_men)
-    else:
-        create_tab(df_kids)
-
-
-
+    create_tab(df_create(tab))    
+    
 if item_code_input!='':
     try:
         predicted_size=size_recommender(item_code_input,Gender_input,Age_Group_input,Height_input,Weight_input)    
@@ -491,15 +460,10 @@ if item_code_input!='':
             st.markdown(gif_html, unsafe_allow_html=True)
 
         st.write('\n')    
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.image(df_img[df_img['item_code']==int(item_code_input)]['img_1'].unique()[0])
-        with col2:
-            st.image(df_img[df_img['item_code']==int(item_code_input)]['img_2'].unique()[0])
-        with col3:
-            st.image(df_img[df_img['item_code']==int(item_code_input)]['img_3'].unique()[0])
-        with col4:
-            st.image(df_img[df_img['item_code']==int(item_code_input)]['img_4'].unique()[0])
+        cols = st.columns(4)
+        for i in range(4):
+            with cols[i]:
+                st.image(df_img[df_img['item_code']==int(item_code_input)]['img_{}'.format(i+1)].unique()[0])
     except:
         st.error('Please double check item code')
 
@@ -587,51 +551,37 @@ def product_recommender(item_code_input,Gender_input,Age_Group_input,Height_inpu
     df_nfs.set_index('ID',inplace=True)
     for i in product_rec_id:
         product_rec.append(df_nfs.loc[[i]]['Item_Code'][0])
-     
-    #def most_frequent(List):
-        #return max(set(List), key = List.count)
-
-    #return most_frequent(product_rec)
 
     products = Counter(product_rec)
     rec2 = products.most_common(2)
     return rec2
 
 
-
-
 if item_code_input!='':
 
     st.write('\n')
     st.header('You may also like:')
-    
     predicted_product=product_recommender(item_code_input,Gender_input,Age_Group_input,Height_input,Weight_input,predicted_size) 
-
-    col5, col6, col7, col8 = st.columns(4)
-    with col5:
-        st.image(df_img[df_img['item_code']==predicted_product[0][0]]['img_1'].unique()[0])
-        st.caption((df_nfs[df_nfs['Item_Code']==predicted_product[0][0]]['Item_Name'][0]).upper())
-        #st.caption(f'Item code: {predicted_product[0][0]}')    
-    with col6:
-        st.image(df_img[df_img['item_code']==predicted_product[0][0]]['img_2'].unique()[0])
-        #st.text((df_nfs[df_nfs['Item_Code']==predicted_product[0][0]]['Item_Name'][0]).upper())
-        st.caption(f'Item code: {predicted_product[0][0]}') 
-    with col7:
-        try:
-            st.image(df_img[df_img['item_code']==predicted_product[1][0]]['img_1'].unique()[0])
-            st.caption((df_nfs[df_nfs['Item_Code']==predicted_product[1][0]]['Item_Name'][0]).upper())
-        except:
-            st.image(df_img[df_img['item_code']==predicted_product[0][0]]['img_3'].unique()[0])
-            #st.caption(f'Item code: {predicted_product[1][0]}') 
-    with col8:
-        try:
-            st.image(df_img[df_img['item_code']==predicted_product[1][0]]['img_2'].unique()[0])
-            #st.text((df_nfs[df_nfs['Item_Code']==predicted_product[1][0]]['Item_Name'][0]).upper())
-            st.caption(f'Item code: {predicted_product[1][0]}')
-        except:
-            st.image(df_img[df_img['item_code']==predicted_product[0][0]]['img_4'].unique()[0])
-
-
+    cols=st.columns(4)
+    if len(predicted_product)==2:
+        count=0
+        for i in predicted_product:
+            with cols[count]:
+                st.image(df_img[df_img['item_code']==i[0]]['img_1'].unique()[0])
+                st.caption((df_nfs[df_nfs['Item_Code']==i[0]]['Item_Name'][0]).upper())  
+                count+=1
+            with cols[count]:
+                st.image(df_img[df_img['item_code']==i[0]]['img_2'].unique()[0])
+                st.caption(f'Item code: {i[0]}') 
+                count+=1
+    else:
+        for i in range(4):
+            with cols[i]:
+                st.image(df_img[df_img['item_code']==predicted_product[0][0]]['img_{}'.format(i+1)].unique()[0])
+                if i==0:
+                    st.caption((df_nfs[df_nfs['Item_Code']==predicted_product[0][0]]['Item_Name'][0]).upper())  
+                if i==1:
+                    st.caption(f'Item code: {predicted_product[0][0]}') 
    
     st.write('\n')    
     st.header('Recently viewed')
@@ -659,9 +609,7 @@ if item_code_input!='':
         df_input_new['customer_id']=1
         df_input_new.to_csv('Input_Data.csv',index=False)
     try:
-        his_list=df_input[df_input['customer_id']==df_input_new['customer_id'].iloc[-1]]['Item_Code']
-        his_list=his_list.tolist()
-        his_list=list(set(his_list))
+        his_list=list(set(df_input[df_input['customer_id']==df_input_new['customer_id'].iloc[-1]]['Item_Code'].tolist()))
         his_list.remove(item_code_input)
         his_list.reverse()
         for i in range(0,len(set(his_list)),4):
@@ -681,8 +629,6 @@ if item_code_input!='':
             
     except:
         pass
-
-
 
     st.write('\n')
     st.text("To go back to product listing page, please delete the item code on sidebar and press 'ENTER'")
