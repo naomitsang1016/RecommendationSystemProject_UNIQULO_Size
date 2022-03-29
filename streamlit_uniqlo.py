@@ -383,7 +383,7 @@ df_img['Item_Sex']=df_img['Item_Name'].apply(lambda x:x[:1])
 def df_create(x):
     if x == 'WOMEN':
         df = df_img[df_img['Item_Sex']=='W']
-    if x == 'MEN':
+    elif x == 'MEN':
         df = df_img[df_img['Item_Sex']=='M']
     else:
         df = df_img[df_img['Item_Sex'].isin(['K','G'])]
