@@ -8,3 +8,5 @@ Two recommendation models are built which are size prediction and product recomm
 
 ## Streamlit online:
 https://share.streamlit.io/naomitsang1016/recommendationsystemproject_uniqulo_size/main/streamlit_uniqlo.py
+![screencapture-naomitsang1016-recommendationsystemproj-streamlit-uniqlo-dikkmp-streamlit-app-2023-03-22-14_25_04](https://user-images.githubusercontent.com/97008731/226819824-9d57b363-6473-4bce-941d-4ae0f948ea8d.png)
+![screencapture-naomitsang1016-recommendationsystemproj-streamlit-uniqlo-dikkmp-streamlit-app-2023-03-22-14_27_06](https://user-images.githubusercontent.com/97008731/226819830-e121e7a9-9e41-44f5-8539-df8a5dbbf927.png)
